@@ -12,8 +12,15 @@ using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
+var postgresHost = Environment.GetEnvironmentVariable("POSTGRES_HOST");
+var postgresPort = Environment.GetEnvironmentVariable("POSTGRES_PORT");
+var postgresDb = Environment.GetEnvironmentVariable("POSTGRES_DB");
+var postgresUser = Environment.GetEnvironmentVariable("POSTGRES_USER");
+var postgresPassword = Environment.GetEnvironmentVariable("POSTGRES_PASSWORD");
+var connectionString = $"Host={postgresHost};Port={postgresPort};Database={postgresDb};Username={postgresUser};Password={postgresPassword}";
+
 // Add services to the container.
-builder.Services.AddDbContext<HackathonDBContext>(options => options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+builder.Services.AddDbContext<HackathonDBContext>(options => options.UseNpgsql(connectionString));
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IEspecialidadeService, EspecialidadeService>();
 builder.Services.AddScoped<IMedicoService, MedicoService>();
@@ -74,11 +81,11 @@ using (var scope = app.Services.CreateScope())
 }
 
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
+//if (app.Environment.IsDevelopment())
+//{
     app.UseSwagger();
     app.UseSwaggerUI();
-}
+//}
 
 //app.UseHttpsRedirection();
 

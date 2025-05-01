@@ -1,0 +1,44 @@
+# Usage:
+# docker compose -f docker-compose.yml up --build
+# docker compose -f docker-compose.yml down
+
+services:
+  api_medico:
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    ports:
+      - 5002:8080
+    depends_on:
+      - db_medico
+    environment:
+      - POSTGRES_HOST=db_medico
+      - POSTGRES_PORT=5432
+      - POSTGRES_DB=hackathon_medico
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=123!asd
+    networks:
+      - hackathon_rede
+
+  db_medico:
+    image: postgres:13
+    hostname: db_medico
+    environment:
+      - POSTGRES_HOST=db_medico
+      - POSTGRES_PORT=5432
+      - POSTGRES_DB=hackathon_medico
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=123!asd
+    ports:
+      - 54322:5432
+    networks:
+      - hackathon_rede
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+networks:
+  hackathon_rede:
+    external: true
+
+volumes:
+  postgres_data:
